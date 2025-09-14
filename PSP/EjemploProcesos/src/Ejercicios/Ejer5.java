@@ -1,43 +1,34 @@
 package Ejercicios;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 
 public class Ejer5 {
-
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		
 		try {
-		System.out.println("Hola");
-			ProcessBuilder pb = new ProcessBuilder("cmd", "/c", "ipconfig /all");	
-		Process proces = pb.start();
-		
-		InputStream is = proces.getInputStream();
-		BufferedReader bis = new BufferedReader(new InputStreamReader(is));
-	String Linea = "";
-		while ((Linea = bis.readLine()) != null) {
-			if(Linea.contains("notepad.exe")) {
-			
+			// 1. List running processes
+			ProcessBuilder pbList = new ProcessBuilder("tasklist");
+			Process proces = pbList.start();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(proces.getInputStream()));
+			String linea;
+			while ((linea = reader.readLine()) != null) {
+				if (linea.toLowerCase().contains("notepad.exe")) {
+					ProcessBuilder pbEliminar = new ProcessBuilder("taskkill", "/F", "/IM", "notepad.exe");
+					Process processElimanar = pbEliminar.start();
+					BufferedReader kReader = new BufferedReader(new InputStreamReader(processElimanar.getInputStream()));
+					String killLinea;
+					while ((killLinea = kReader.readLine()) != null) {
+						System.out.println(killLinea);
+					}
+					kReader.close();
+					break;
+				}
 			}
-		}
-
-		
-
-
+			reader.close();
+			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-
-
-		} 
-		
-		System.exit(-4);
-
+			e.printStackTrace();
+		}
 	}
-
 }
